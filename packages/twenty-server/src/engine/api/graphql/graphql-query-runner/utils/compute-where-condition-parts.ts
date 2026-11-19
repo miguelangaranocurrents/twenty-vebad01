@@ -81,7 +81,9 @@ export const computeWhereConditionParts = ({
       }
 
       return {
-        sql: `${fieldReference} != :${key}${paramSuffix}${hasNullEquivalentFieldValue ? ` AND ${fieldReference} IS NOT NULL` : ''}`,
+        sql: hasNullEquivalentFieldValue
+          ? `${fieldReference} != :${key}${paramSuffix} AND ${fieldReference} IS NOT NULL`
+          : `(${fieldReference} != :${key}${paramSuffix} OR ${fieldReference} IS NULL)`,
         params: { [`${key}${paramSuffix}`]: value },
       };
     case 'gt':
